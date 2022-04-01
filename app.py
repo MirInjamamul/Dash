@@ -1,22 +1,45 @@
 from dash import Dash, html, dcc
-import pandas as pd
-import plotly.express as px
 
-df = pd.read_csv('https://gist.githubusercontent.com/chriddyp/5d1ea79569ed194d432e56108a04d188/raw/a9f9e8076b837d541398e999dcbac2b2826a81f8/gdp-life-exp-2007.csv')
 
 app = Dash(__name__)
 
-fig = px.scatter(
-    df, x='gdp per capita', y='life expectancy',
-    size='population', color='continent', hover_name='country',
-    log_x=True, size_max=60)
-
 app.layout = html.Div([
-    dcc.Graph(
-        id='life-exp-vs-gdp',
-        figure=fig
-    )
-])
+    html.Div(children=[
+        html.Label('Dropdown'),
+        dcc.Dropdown(['New York City', 'Montreal', 'San Fransisco'], 'Montreal'),
+
+        html.Br(),
+
+        html.Label('Multi-Select Dropdown'),
+        dcc.Dropdown(['New York City', 'Montreal', 'San Fransisco'],
+                     ['New York City', 'Montreal'],
+                     multi=True),
+
+         html.Br(),
+        html.Label('Radio Items'),
+        dcc.RadioItems(['New York City', 'Montréal', 'San Francisco'], 'Montréal'),
+    ], style={'padding': 10, 'flex': 1}),
+
+    html.Div(children=[
+        html.Label('Checkboxes'),
+        dcc.Checklist(['New York City', 'Montréal', 'San Francisco'],
+                      ['Montréal', 'San Francisco']
+        ),
+
+        html.Br(),
+        html.Label('Text Input'),
+        dcc.Input(value='MTL', type='text'),
+
+        html.Br(),
+        html.Label('Slider'),
+        dcc.Slider(
+            min=0,
+            max=9,
+            marks={i: f'Label {i}' if i == 1 else str(i) for i in range(1, 6)},
+            value=5,
+        ),
+    ], style={'padding': 10, 'flex': 1})
+], style={'display': 'flex', 'flex-direction': 'row'})
 
 if __name__ == '__main__':
     app.run_server(debug=True)
