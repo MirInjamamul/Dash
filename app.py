@@ -1,45 +1,26 @@
-from dash import Dash, html, dcc
-
+from dash import Dash, html, dcc, Input, Output
 
 app = Dash(__name__)
 
 app.layout = html.Div([
-    html.Div(children=[
-        html.Label('Dropdown'),
-        dcc.Dropdown(['New York City', 'Montreal', 'San Fransisco'], 'Montreal'),
+        html.H6('Change the value in text box to see the callbacks in actions'),
+        html.Div([
+            'Input: ',
+            dcc.Input(id='my-input', value='initial value', type='text')
+    ]),
 
-        html.Br(),
+    html.Br(),
+    html.Div(id='my-output'),
 
-        html.Label('Multi-Select Dropdown'),
-        dcc.Dropdown(['New York City', 'Montreal', 'San Fransisco'],
-                     ['New York City', 'Montreal'],
-                     multi=True),
+])
 
-         html.Br(),
-        html.Label('Radio Items'),
-        dcc.RadioItems(['New York City', 'Montréal', 'San Francisco'], 'Montréal'),
-    ], style={'padding': 10, 'flex': 1}),
+@app.callback(
+        Output(component_id='my-output', component_property='children'),
+        Input(component_id='my-input', component_property='value')
+)
 
-    html.Div(children=[
-        html.Label('Checkboxes'),
-        dcc.Checklist(['New York City', 'Montréal', 'San Francisco'],
-                      ['Montréal', 'San Francisco']
-        ),
-
-        html.Br(),
-        html.Label('Text Input'),
-        dcc.Input(value='MTL', type='text'),
-
-        html.Br(),
-        html.Label('Slider'),
-        dcc.Slider(
-            min=0,
-            max=9,
-            marks={i: f'Label {i}' if i == 1 else str(i) for i in range(1, 6)},
-            value=5,
-        ),
-    ], style={'padding': 10, 'flex': 1})
-], style={'display': 'flex', 'flex-direction': 'row'})
+def update_output_div(input_value):
+    return f'Output {input_value}'
 
 if __name__ == '__main__':
     app.run_server(debug=True)
